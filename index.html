@@ -6,466 +6,322 @@
 <title>Velvet Beauty — CRM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<style>
-:root {
-  --accent:        #7C3AED;
-  --accent-mid:    #8B5CF6;
-  --accent-light:  #EDE9FE;
-  --pink:          #EC4899;
-  --pink-light:    #FCE7F3;
-  --bg:            #F4F2FF;
-  --sidebar:       #1E1B4B;
-  --card:          #FFFFFF;
-  --border:        #E9E7F0;
-  --text:          #111827;
-  --text-2:        #6B7280;
-  --text-3:        #9CA3AF;
-  --green:         #10B981;
-  --green-bg:      #D1FAE5;
-  --green-text:    #065F46;
-  --yellow:        #F59E0B;
-  --yellow-bg:     #FEF3C7;
-  --yellow-text:   #92400E;
-  --red:           #EF4444;
-  --red-bg:        #FEE2E2;
-  --red-text:      #991B1B;
-  --blue-bg:       #DBEAFE;
-  --blue-text:     #1E40AF;
-  --shadow-s:      0 1px 2px rgba(0,0,0,.05);
-  --shadow-m:      0 4px 12px rgba(0,0,0,.07);
-  --shadow-l:      0 12px 32px rgba(0,0,0,.09);
-  --r:             16px;
-  --r-s:           10px;
-  --r-xs:          6px;
-  --sw:            240px;
-  --th:            64px;
-  --ease:          .18s cubic-bezier(.4,0,.2,1);
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{font-size:14px}
-body{font-family:'Inter',-apple-system,sans-serif;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.5}
-button,input{font-family:inherit}
-
-/* ── APP SHELL ── */
-.app{display:flex;height:100vh;overflow:hidden}
-
-/* ── SIDEBAR ── */
-.sidebar{
-  width:var(--sw);flex-shrink:0;
-  background:var(--sidebar);
-  display:flex;flex-direction:column;overflow:hidden;
-  position:relative;z-index:10;
-}
-.sidebar::before{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(ellipse 200px 180px at 120px 0px,rgba(139,92,246,.25),transparent);
-}
-.sb-head{padding:22px 18px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
-.logo{display:flex;align-items:center;gap:10px}
-.logo-icon{
-  width:36px;height:36px;border-radius:10px;flex-shrink:0;
-  background:linear-gradient(135deg,var(--accent),var(--pink));
-  display:flex;align-items:center;justify-content:center;
-}
-.logo-text{font-size:14.5px;font-weight:700;color:#fff;letter-spacing:-.3px;line-height:1.2}
-.logo-sub{font-size:10.5px;color:rgba(255,255,255,.38);letter-spacing:.1px}
-.sb-nav{flex:1;padding:10px 10px;overflow-y:auto;display:flex;flex-direction:column;gap:1px}
-.sb-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.28);padding:14px 8px 5px}
-.nav-item{
-  display:flex;align-items:center;gap:10px;
-  padding:9px 12px;border-radius:9px;
-  color:rgba(255,255,255,.55);font-size:13px;font-weight:500;
-  cursor:pointer;transition:all var(--ease);user-select:none;
-}
-.nav-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
-.nav-item.active{background:rgba(255,255,255,.11);color:#fff}
-.nav-item.active .ni{opacity:1;color:var(--accent-mid)}
-.ni{width:17px;height:17px;flex-shrink:0;opacity:.65;transition:opacity var(--ease)}
-.nav-badge{
-  margin-left:auto;background:var(--pink);color:#fff;
-  font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px;min-width:18px;text-align:center;
-}
-.sb-foot{padding:14px 16px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px}
-.sb-avatar{
-  width:34px;height:34px;border-radius:50%;flex-shrink:0;
-  background:linear-gradient(135deg,var(--accent),var(--pink));
-  display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:700;color:#fff;
-}
-.sb-name{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.82);line-height:1.2}
-.sb-role{font-size:11px;color:rgba(255,255,255,.38)}
-
-/* ── MAIN & TOPBAR ── */
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
-.topbar{
-  height:var(--th);background:#fff;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;padding:0 28px;gap:14px;flex-shrink:0;
-}
-.tb-brand{display:flex;align-items:center;gap:8px;margin-right:auto}
-.tb-salon{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.3px}
-.tb-dot{width:5px;height:5px;border-radius:50%;background:var(--green);margin-top:1px}
-.tb-status{font-size:11.5px;color:var(--green);font-weight:600}
-.search-wrap{position:relative;display:flex;align-items:center}
-.search-wrap svg{position:absolute;left:11px;color:var(--text-3);pointer-events:none;flex-shrink:0}
-.search-wrap input{
-  width:230px;height:38px;background:var(--bg);border:1.5px solid var(--border);
-  border-radius:var(--r-s);padding:0 12px 0 36px;font-size:13px;color:var(--text);outline:none;transition:all var(--ease);
-}
-.search-wrap input::placeholder{color:var(--text-3)}
-.search-wrap input:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(124,58,237,.1)}
-.tb-actions{display:flex;align-items:center;gap:8px}
-.icon-btn{
-  width:38px;height:38px;border:1.5px solid var(--border);border-radius:var(--r-s);
-  background:#fff;display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:var(--text-2);transition:all var(--ease);position:relative;
-}
-.icon-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
-.notif-dot{position:absolute;top:7px;right:7px;width:7px;height:7px;background:var(--pink);border-radius:50%;border:1.5px solid #fff}
-.admin-av{
-  width:38px;height:38px;border-radius:50%;cursor:pointer;
-  background:linear-gradient(135deg,var(--accent),var(--pink));
-  display:flex;align-items:center;justify-content:center;
-  font-size:12.5px;font-weight:700;color:#fff;
-  box-shadow:0 2px 8px rgba(124,58,237,.35);
-}
-
-/* ── CONTENT & SECTIONS ── */
-.content{flex:1;overflow-y:auto;padding:28px 30px}
-.section{display:none;animation:fadeUp .22s ease both}
-.section.active{display:block}
-@keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
-.pg-head{margin-bottom:24px}
-.pg-title{font-size:21px;font-weight:800;letter-spacing:-.5px;color:var(--text)}
-.pg-sub{font-size:13px;color:var(--text-2);margin-top:2px}
-
-/* ── CARD ── */
-.card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:22px 24px;box-shadow:var(--shadow-s);transition:box-shadow var(--ease)}
-.card:hover{box-shadow:var(--shadow-m)}
-.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-.card-title{font-size:14.5px;font-weight:600;color:var(--text);letter-spacing:-.2px}
-.card-action{font-size:12.5px;color:var(--accent);font-weight:500;cursor:pointer;transition:opacity var(--ease)}
-.card-action:hover{opacity:.7}
-
-/* ── METRICS ── */
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
-.m-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:20px 20px 18px;box-shadow:var(--shadow-s);cursor:default;transition:all var(--ease)}
-.m-card:hover{box-shadow:var(--shadow-m);transform:translateY(-2px)}
-.m-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
-.m-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.m-trend{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:20px}
-.trend-up{background:var(--green-bg);color:var(--green-text)}
-.m-val{font-size:27px;font-weight:800;letter-spacing:-.8px;color:var(--text);line-height:1;margin-bottom:5px}
-.m-label{font-size:13px;color:var(--text-2)}
-.m-hint{font-size:11px;color:var(--text-3);margin-top:2px}
-
-/* ── CHARTS ── */
-.charts{display:grid;grid-template-columns:3fr 2fr;gap:14px;margin-bottom:18px}
-
-/* ── APT LIST ── */
-.apt-row{display:flex;align-items:center;gap:14px;padding:11px 10px;border-radius:var(--r-xs);border-bottom:1px solid var(--border);transition:background var(--ease);margin:0 -10px}
-.apt-row:last-child{border-bottom:none}
-.apt-row:hover{background:#FAFBFF}
-.apt-time{font-size:12.5px;font-weight:600;color:var(--text-2);min-width:42px;flex-shrink:0}
-.apt-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.apt-info{flex:1;min-width:0}
-.apt-client{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.apt-svc{font-size:12px;color:var(--text-2);margin-top:1px}
-.apt-master-name{font-size:12px;color:var(--text-2);text-align:right;min-width:130px;flex-shrink:0}
-.apt-price{font-size:13px;font-weight:600;min-width:80px;text-align:right;flex-shrink:0}
-.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0}
-.b-ok{background:var(--green-bg);color:var(--green-text)}
-.b-wait{background:var(--yellow-bg);color:var(--yellow-text)}
-.b-cancel{background:var(--red-bg);color:var(--red-text)}
-
-/* ── SCHEDULE ── */
-.sch-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;gap:12px;flex-wrap:wrap}
-.sch-left{display:flex;align-items:center;gap:8px}
-.sch-nav{width:32px;height:32px;border:1.5px solid var(--border);border-radius:8px;background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-2);transition:all var(--ease)}
-.sch-nav:hover{border-color:var(--accent);color:var(--accent)}
-.sch-date{font-size:15px;font-weight:700;letter-spacing:-.3px;padding:0 6px}
-.sch-filters{display:flex;gap:6px;flex-wrap:wrap}
-.sch-filter{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border);background:#fff;font-size:12px;font-weight:600;color:var(--text-2);cursor:pointer;transition:all var(--ease)}
-.sch-filter:hover,.sch-filter.active{background:var(--accent-light);border-color:var(--accent);color:var(--accent)}
-.btn-primary{display:inline-flex;align-items:center;gap:7px;background:var(--accent);color:#fff;border:none;border-radius:var(--r-s);padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:all var(--ease)}
-.btn-primary:hover{background:#6D28D9;box-shadow:0 4px 14px rgba(124,58,237,.35);transform:translateY(-1px)}
-.masters-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.m-col{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;transition:box-shadow var(--ease)}
-.m-col:hover{box-shadow:var(--shadow-m)}
-.m-col-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:#FAFBFF}
-.m-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11.5px;font-weight:700;color:#fff;flex-shrink:0}
-.m-nm{font-size:12.5px;font-weight:600;line-height:1.2}
-.m-rl{font-size:11px;color:var(--text-3)}
-.m-apts{padding:10px 12px;display:flex;flex-direction:column;gap:7px;min-height:120px}
-.sch-card{border-radius:9px;padding:9px 11px;cursor:pointer;transition:all var(--ease);border-left:3px solid transparent}
-.sch-card:hover{filter:brightness(.97);transform:translateX(2px)}
-.sch-card.confirmed{background:#F0FDF4;border-color:var(--green)}
-.sch-card.waiting{background:#FFFBEB;border-color:var(--yellow)}
-.sch-card.cancelled{background:#FFF1F0;border-color:var(--red);opacity:.65}
-.sch-t{font-size:10.5px;font-weight:700;color:var(--text-2);margin-bottom:3px;text-transform:uppercase;letter-spacing:.2px}
-.sch-svc{font-size:12px;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:2px}
-.sch-cl{font-size:11px;color:var(--text-2)}
-.m-empty{display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-3);padding:24px 0;flex:1}
-.soon-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 20px;gap:16px}
-.soon-icon{width:64px;height:64px;border-radius:20px;background:var(--accent-light);display:flex;align-items:center;justify-content:center}
-.soon-title{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.3px}
-.soon-text{font-size:13.5px;color:var(--text-2);text-align:center;max-width:320px;line-height:1.6}
-
-/* ── CLIENTS ── */
-.cl-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap}
-.cl-search{position:relative;display:flex;align-items:center}
-.cl-search svg{position:absolute;left:11px;color:var(--text-3);pointer-events:none}
-.cl-search input{width:290px;height:40px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-s);padding:0 12px 0 38px;font-size:13px;color:var(--text);outline:none;transition:all var(--ease)}
-.cl-search input::placeholder{color:var(--text-3)}
-.cl-search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,.1)}
-.cl-stat{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-s);padding:6px 14px;font-size:12px;font-weight:600;color:var(--text-2)}
-.cl-stat span{color:var(--accent);font-weight:700}
-.tbl-wrap{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-s)}
-table{width:100%;border-collapse:collapse}
-thead{background:#FAFBFF;border-bottom:1.5px solid var(--border)}
-th{text-align:left;padding:11px 20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3)}
-td{padding:13px 20px;font-size:13px;border-bottom:1px solid var(--border)}
-tr:last-child td{border-bottom:none}
-tbody tr{transition:background var(--ease)}
-tbody tr:hover td{background:#FAFBFF}
-.cl-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:#fff;flex-shrink:0}
-.cl-nm{font-weight:600}
-.cl-ph{color:var(--text-2);font-size:12.5px}
-.visit-chip{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:var(--accent-light);color:var(--accent);border-radius:50%;font-size:11.5px;font-weight:700}
-.svc-tag{display:inline-flex;align-items:center;background:var(--bg);color:var(--text-2);font-size:11.5px;padding:3px 9px;border-radius:20px;border:1px solid var(--border)}
-.vip-tag{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:20px;background:linear-gradient(135deg,#FDE68A,#FCD34D);color:#92400E}
-
-/* ── RESPONSIVE ── */
-@media(max-width:1280px){.charts{grid-template-columns:1fr}.masters-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:1024px){.metrics{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:768px){.sidebar{display:none}.content{padding:16px}.topbar{padding:0 16px}.metrics{grid-template-columns:1fr 1fr;gap:10px}.search-wrap input{width:160px}.masters-grid{grid-template-columns:1fr}}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
 <div class="app">
+
+  <!-- ── SIDEBAR ── -->
   <aside class="sidebar">
     <div class="sb-head">
       <div class="logo">
         <div class="logo-icon">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
         </div>
-        <div><div class="logo-text">Velvet Beauty</div><div class="logo-sub">CRM система</div></div>
+        <div>
+          <div class="logo-text">Velvet Beauty</div>
+          <div class="logo-sub">CRM v2.1</div>
+        </div>
       </div>
     </div>
-    <nav class="sb-nav" id="sb-nav">
-      <div class="sb-label">Основное</div>
-      <div class="nav-item active" data-sec="dashboard"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg><span class="nav-label">Дашборд</span><span class="nav-badge">3</span></div>
-      <div class="nav-item" data-sec="appointments"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="nav-label">Записи</span></div>
-      <div class="nav-item" data-sec="clients"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="nav-label">Клиенты</span></div>
+
+    <nav class="sb-nav">
+      <div class="sb-label">Главное</div>
+      <div class="nav-item active" data-section="dashboard">
+        <svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Дашборд
+      </div>
+      <div class="nav-item" data-section="schedule">
+        <svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Записи
+        <span class="nav-badge">8</span>
+      </div>
+      <div class="nav-item" data-section="clients">
+        <svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Клиенты
+      </div>
       <div class="sb-label">Управление</div>
-      <div class="nav-item" data-sec="masters"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="nav-label">Мастера</span></div>
-      <div class="nav-item" data-sec="analytics"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg><span class="nav-label">Аналитика</span></div>
+      <div class="nav-item" data-section="masters">
+        <svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Мастера
+      </div>
+      <div class="nav-item" data-section="analytics">
+        <svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Аналитика
+      </div>
     </nav>
-    <div class="sb-foot"><div class="sb-avatar">АК</div><div><div class="sb-name">Алина Козлова</div><div class="sb-role">Администратор</div></div></div>
+
+    <div class="sb-foot" id="sb-profile-btn" title="Профиль">
+      <div class="sb-avatar">АК</div>
+      <div>
+        <div class="sb-name">Алина Козлова</div>
+        <div class="sb-role">Администратор</div>
+      </div>
+    </div>
   </aside>
+
+  <!-- ── MAIN ── -->
   <div class="main">
+
+    <!-- Topbar -->
     <header class="topbar">
-      <div class="tb-brand"><span class="tb-salon">Velvet Beauty</span><div class="tb-dot"></div><span class="tb-status">Онлайн</span></div>
-      <div class="search-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Поиск клиентов, записей..."></div>
+      <div class="tb-brand">
+        <span class="tb-salon">Velvet Beauty Studio</span>
+        <span class="tb-dot"></span>
+        <span class="tb-status">Открыт</span>
+      </div>
+
+      <div class="search-wrap">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" placeholder="Поиск клиентов, записей…">
+      </div>
+
       <div class="tb-actions">
-        <button class="icon-btn"><div class="notif-dot"></div><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
-        <div class="admin-av">АК</div>
+        <button class="icon-btn" id="notif-btn" title="Уведомления" aria-label="Уведомления">
+          <span class="notif-badge" id="notif-badge">3</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </button>
+        <div class="admin-av" id="profile-btn" title="Профиль" role="button" tabindex="0">АК</div>
       </div>
     </header>
+
+    <!-- Content -->
     <div class="content">
+
+      <!-- Dashboard -->
       <section id="section-dashboard" class="section active">
-        <div class="pg-head"><h1 class="pg-title">Дашборд</h1><p class="pg-sub">Воскресенье, 16 июня 2024 · Сегодня 24 записи</p></div>
-        <div class="metrics" id="metrics-grid"></div>
-        <div class="charts">
-          <div class="card"><div class="card-head"><span class="card-title">Выручка за последние 2 недели</span><span class="card-action">Подробнее</span></div><canvas id="revenueChart" height="105"></canvas></div>
-          <div class="card"><div class="card-head"><span class="card-title">Популярность услуг</span><span class="card-action">Все услуги</span></div><canvas id="servicesChart" height="215"></canvas></div>
+        <div class="pg-head">
+          <h1 class="pg-title">Дашборд</h1>
+          <p class="pg-sub">Воскресенье, 16 июня 2025 · Сегодня <strong>24 записи</strong></p>
         </div>
+
+        <div class="metrics" id="metrics-grid"></div>
+
+        <div class="charts">
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Выручка за 2 недели</span>
+              <span class="card-action">Отчёт →</span>
+            </div>
+            <canvas id="revenueChart" height="105"></canvas>
+          </div>
+          <div class="card">
+            <div class="card-head">
+              <span class="card-title">Популярность услуг</span>
+              <span class="card-action">Все →</span>
+            </div>
+            <canvas id="servicesChart" height="215"></canvas>
+          </div>
+        </div>
+
         <div class="card">
-          <div class="card-head"><span class="card-title">Ближайшие записи на сегодня</span><span class="card-action" data-sec="appointments" id="apts-link">Расписание →</span></div>
+          <div class="card-head">
+            <span class="card-title">Сегодняшние записи</span>
+            <span class="card-action" id="apts-link">Расписание →</span>
+          </div>
           <div id="today-list"></div>
         </div>
       </section>
-      <section id="section-appointments" class="section">
-        <div class="pg-head"><h1 class="pg-title">Записи</h1><p class="pg-sub">Расписание мастеров на день</p></div>
-        <div class="sch-top">
-          <div class="sch-left">
-            <button class="sch-nav"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-            <span class="sch-date">16 июня 2024, Воскресенье</span>
-            <button class="sch-nav"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-          </div>
-          <div class="sch-filters">
-            <button class="sch-filter active">Все</button>
-            <button class="sch-filter">Подтверждена</button>
-            <button class="sch-filter">Ожидает</button>
-            <button class="sch-filter">Отменена</button>
-          </div>
-          <button class="btn-primary"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Новая запись</button>
+
+      <!-- Schedule -->
+      <section id="section-schedule" class="section">
+        <div class="pg-head">
+          <h1 class="pg-title">Расписание</h1>
+          <p class="pg-sub">Загрузка мастеров на сегодня</p>
         </div>
-        <div class="masters-grid" id="masters-grid"></div>
+        <div class="card">
+          <div class="sch-top">
+            <div class="sch-left">
+              <button class="sch-nav">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <span class="sch-date">16 июня 2025, Воскресенье</span>
+              <button class="sch-nav">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+            <div class="sch-filters">
+              <button class="sch-filter active" data-filter="all">Все</button>
+              <button class="sch-filter" data-filter="confirmed">Подтверждена</button>
+              <button class="sch-filter" data-filter="waiting">Ожидание</button>
+              <button class="sch-filter" data-filter="cancelled">Отменена</button>
+            </div>
+            <button class="btn-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Новая запись
+            </button>
+          </div>
+          <div class="masters-grid" id="masters-grid"></div>
+        </div>
       </section>
+
+      <!-- Clients -->
       <section id="section-clients" class="section">
-        <div class="pg-head"><h1 class="pg-title">Клиенты</h1><p class="pg-sub">База клиентов салона</p></div>
+        <div class="pg-head">
+          <h1 class="pg-title">Клиенты</h1>
+          <p class="pg-sub">База клиентов салона</p>
+        </div>
         <div class="cl-top">
           <div class="cl-search">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input id="cl-input" type="text" placeholder="Поиск по имени, телефону, услуге...">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="cl-input" placeholder="Поиск по имени, телефону…">
           </div>
-          <div style="display:flex;gap:10px;align-items:center">
-            <div class="cl-stat">Клиентов: <span id="cl-count">18</span></div>
-            <button class="btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Добавить</button>
-          </div>
+          <div class="cl-stat">Всего: <span id="cl-count">18</span></div>
+          <button class="btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Добавить клиента
+          </button>
         </div>
-        <div class="tbl-wrap"><table><thead><tr><th>Клиент</th><th>Телефон</th><th>Последний визит</th><th>Визитов</th><th>Любимая услуга</th><th>Статус</th></tr></thead><tbody id="cl-tbody"></tbody></table></div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Клиент</th>
+                <th>Телефон</th>
+                <th>Последний визит</th>
+                <th>Визитов</th>
+                <th>Любимая услуга</th>
+              </tr>
+            </thead>
+            <tbody id="clients-tbody"></tbody>
+          </table>
+        </div>
       </section>
+
+      <!-- Masters -->
       <section id="section-masters" class="section">
-        <div class="pg-head"><h1 class="pg-title">Мастера</h1><p class="pg-sub">Управление командой</p></div>
-        <div class="soon-wrap"><div class="soon-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div class="soon-title">Раздел в разработке</div><p class="soon-text">Здесь будет управление профилями мастеров, расписанием и статистикой по каждому специалисту.</p></div>
+        <div class="pg-head">
+          <h1 class="pg-title">Мастера</h1>
+          <p class="pg-sub">Управление командой</p>
+        </div>
+        <div class="soon-wrap">
+          <div class="soon-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="soon-title">Раздел в разработке</div>
+          <p class="soon-text">Здесь будет управление профилями мастеров, их расписанием и статистикой по каждому специалисту.</p>
+        </div>
       </section>
+
+      <!-- Analytics -->
       <section id="section-analytics" class="section">
-        <div class="pg-head"><h1 class="pg-title">Аналитика</h1><p class="pg-sub">Бизнес-отчёты</p></div>
-        <div class="soon-wrap"><div class="soon-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div><div class="soon-title">Раздел в разработке</div><p class="soon-text">Здесь будут детальные отчёты по выручке, загрузке мастеров, эффективности рекламных каналов.</p></div>
+        <div class="pg-head">
+          <h1 class="pg-title">Аналитика</h1>
+          <p class="pg-sub">Отчёты и показатели</p>
+        </div>
+        <div class="soon-wrap">
+          <div class="soon-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          </div>
+          <div class="soon-title">Раздел в разработке</div>
+          <p class="soon-text">Подробная аналитика по выручке, загрузке, популярности услуг и динамике клиентской базы.</p>
+        </div>
       </section>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+
+<!-- ── PROFILE DROPDOWN ── -->
+<div class="dropdown" id="profile-dropdown" role="menu">
+  <div class="dd-user">
+    <div class="dd-av">АК</div>
+    <div>
+      <div class="dd-name">Алина Козлова</div>
+      <div class="dd-role">Администратор</div>
     </div>
   </div>
+  <div class="dd-sep"></div>
+  <button class="dd-item" role="menuitem">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Профиль
+  </button>
+  <button class="dd-item" role="menuitem">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    Настройки
+  </button>
+  <div class="dd-sep"></div>
+  <button class="dd-item dd-danger" role="menuitem">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    Выйти
+  </button>
 </div>
-<script>
-/* ── DATA ── */
-const TODAY_APTS = [
-  { time:'10:00', client:'Анастасия Белова',   svc:'Стрижка женская',            master:'Анна Соколова',     status:'confirmed', price:2500  },
-  { time:'10:30', client:'Марина Захарова',    svc:'Маникюр + гель',             master:'Елена Петрова',     status:'confirmed', price:2800  },
-  { time:'11:00', client:'Дарья Смирнова',     svc:'Окрашивание',                master:'Мария Козлова',     status:'waiting',   price:5500  },
-  { time:'11:30', client:'Екатерина Иванова',  svc:'Педикюр',                    master:'Татьяна Волкова',   status:'confirmed', price:2500  },
-  { time:'12:00', client:'Светлана Федорова',  svc:'Кератиновое выпрямление',    master:'Ирина Лебедева',    status:'confirmed', price:8000  },
-  { time:'13:00', client:'Ольга Кузнецова',    svc:'Чистка лица',                master:'Юлия Морозова',     status:'cancelled', price:3500  },
-  { time:'14:00', client:'Наталья Попова',     svc:'Стрижка + укладка',          master:'Ольга Новикова',    status:'waiting',   price:4000  },
-  { time:'15:30', client:'Марина Захарова',    svc:'Ламинирование ресниц',       master:'Наталья Соловьева', status:'confirmed', price:2200  },
-  { time:'16:00', client:'Анна Громова',       svc:'Косметическая консультация', master:'Юлия Морозова',     status:'waiting',   price:1000  },
-];
-const REVENUE_LABELS = ['3 июн','4 июн','5 июн','6 июн','7 июн','8 июн','9 июн','10 июн','11 июн','12 июн','13 июн','14 июн','15 июн','16 июн'];
-const REVENUE_DATA   = [52000,48500,63000,74500,68000,41000,36500,66000,79000,83500,72000,91500,86000,94200];
-const SVC_LABELS = ['Стрижка','Маникюр + гель','Окрашивание','Педикюр','Укладка','Косметология','Ламинирование'];
-const SVC_DATA   = [148,134,99,88,77,62,54];
-const METRICS_DATA = [
-  { icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',ibg:'#EDE9FE',ic:'#7C3AED',val:'24',label:'Записей сегодня',trend:'+8%',hint:'vs вчера'},
-  { icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',ibg:'#D1FAE5',ic:'#059669',val:'847 200 ₽',label:'Выручка за месяц',trend:'+12%',hint:'vs прошлый месяц'},
-  { icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>',ibg:'#DBEAFE',ic:'#2563EB',val:'18',label:'Новых клиентов',trend:'+15%',hint:'vs прошлый месяц'},
-  { icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',ibg:'#FEF3C7',ic:'#D97706',val:'78%',label:'Загрузка мастеров',trend:'+5%',hint:'vs вчера'},
-];
-const statusLabel = {confirmed:'Подтверждена',waiting:'Ожидает',cancelled:'Отменена'};
-const statusClass = {confirmed:'b-ok',waiting:'b-wait',cancelled:'b-cancel'};
-const statusDot   = {confirmed:'#10B981',waiting:'#F59E0B',cancelled:'#EF4444'};
-function fmt(n){return n.toLocaleString('ru-RU')+' ₽'}
 
-/* ── RENDER METRICS ── */
-function renderMetrics(){
-  document.getElementById('metrics-grid').innerHTML = METRICS_DATA.map(m=>`
-    <div class="m-card">
-      <div class="m-top"><div class="m-icon" style="background:${m.ibg};color:${m.ic}">${m.icon}</div>
-      <span class="m-trend trend-up"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>${m.trend}</span></div>
-      <div class="m-val">${m.val}</div><div class="m-label">${m.label}</div><div class="m-hint">${m.hint}</div>
-    </div>`).join('');
-}
 
-/* ── RENDER TODAY ── */
-function renderToday(){
-  document.getElementById('today-list').innerHTML = TODAY_APTS.map(a=>`
-    <div class="apt-row">
-      <span class="apt-time">${a.time}</span>
-      <div class="apt-dot" style="background:${statusDot[a.status]}"></div>
-      <div class="apt-info"><div class="apt-client">${a.client}</div><div class="apt-svc">${a.svc}</div></div>
-      <span class="apt-master-name">${a.master}</span>
-      <span class="badge ${statusClass[a.status]}">${statusLabel[a.status]}</span>
-      <span class="apt-price">${fmt(a.price)}</span>
-    </div>`).join('');
-}
+<!-- ── NOTIFICATION PANEL ── -->
+<div class="notif-panel" id="notif-panel">
+  <div class="np-head">
+    <span class="np-title">Уведомления</span>
+    <button class="np-mark" id="np-mark-btn">Прочитать все</button>
+  </div>
 
-/* ── CHARTS ── */
-function initCharts(){
-  Chart.defaults.font.family="'Inter',sans-serif";Chart.defaults.color='#9CA3AF';
-  const rCtx=document.getElementById('revenueChart').getContext('2d');
-  const grad=rCtx.createLinearGradient(0,0,0,280);
-  grad.addColorStop(0,'rgba(124,58,237,.18)');grad.addColorStop(1,'rgba(124,58,237,0)');
-  new Chart(rCtx,{type:'line',data:{labels:REVENUE_LABELS,datasets:[{data:REVENUE_DATA,borderColor:'#7C3AED',backgroundColor:grad,fill:true,tension:.42,borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#7C3AED',pointBorderColor:'#fff',pointBorderWidth:2,pointHoverRadius:6}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1E1B4B',titleFont:{size:12,weight:'600'},bodyFont:{size:13,weight:'700'},padding:12,cornerRadius:10,callbacks:{label:c=>' '+c.raw.toLocaleString('ru-RU')+' ₽'}}},scales:{x:{grid:{display:false},border:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'rgba(0,0,0,.04)'},border:{display:false},ticks:{font:{size:11},callback:v=>(v/1000).toFixed(0)+'к ₽',maxTicksLimit:5}}}}});
-  new Chart(document.getElementById('servicesChart').getContext('2d'),{type:'bar',data:{labels:SVC_LABELS,datasets:[{data:SVC_DATA,backgroundColor:['#7C3AED','#8B5CF6','#9F67FA','#A78BFA','#B8A4F8','#C4B5FD','#DDD6FE'],borderRadius:7,borderSkipped:false,barThickness:18}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1E1B4B',padding:10,cornerRadius:10,callbacks:{label:c=>'  '+c.raw+' записей'}}},scales:{x:{grid:{color:'rgba(0,0,0,.04)'},border:{display:false},ticks:{font:{size:11}}},y:{grid:{display:false},border:{display:false},ticks:{font:{size:12,weight:'500'}}}}}});
-}
+  <div class="np-item unread">
+    <div class="np-icon" style="background:#EDE9FE">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    </div>
+    <div class="np-content">
+      <div class="np-text">Новая запись</div>
+      <div class="np-sub">Анастасия Белова · Стрижка женская · 10:00</div>
+    </div>
+    <div class="np-time">2 мин</div>
+  </div>
 
-/* ── NAV ── */
-function navigate(sec){
-  document.querySelectorAll('.nav-item').forEach(i=>i.classList.toggle('active',i.dataset.sec===sec));
-  document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===`section-${sec}`));
-}
-document.getElementById('sb-nav').addEventListener('click',e=>{const item=e.target.closest('.nav-item');if(item)navigate(item.dataset.sec)});
-document.getElementById('apts-link').addEventListener('click',()=>navigate('appointments'));
+  <div class="np-item unread">
+    <div class="np-icon" style="background:#FEE2E2">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+    </div>
+    <div class="np-content">
+      <div class="np-text">Запись отменена</div>
+      <div class="np-sub">Ольга Кузнецова · Чистка лица · 12:30</div>
+    </div>
+    <div class="np-time">18 мин</div>
+  </div>
 
-/* ── SCHEDULE DATA & RENDER ── */
-const MASTERS=[
-  {id:1,name:'Анна Соколова',    role:'Стилист',         color:'#7C3AED',init:'АС'},
-  {id:2,name:'Мария Козлова',    role:'Колорист',        color:'#EC4899',init:'МК'},
-  {id:3,name:'Елена Петрова',    role:'Мастер маникюра', color:'#3B82F6',init:'ЕП'},
-  {id:4,name:'Ольга Новикова',   role:'Стилист',         color:'#F59E0B',init:'ОН'},
-  {id:5,name:'Юлия Морозова',    role:'Косметолог',      color:'#10B981',init:'ЮМ'},
-  {id:6,name:'Татьяна Волкова',  role:'Мастер маникюра', color:'#EF4444',init:'ТВ'},
-  {id:7,name:'Ирина Лебедева',   role:'Стилист',         color:'#8B5CF6',init:'ИЛ'},
-  {id:8,name:'Наталья Соловьева',role:'Колорист',        color:'#06B6D4',init:'НС'},
-];
-const SCHEDULE={
-  1:[{time:'10:00 – 11:00',svc:'Стрижка женская',client:'Анастасия Белова',status:'confirmed'},{time:'12:00 – 13:30',svc:'Стрижка + укладка',client:'Ольга Кравченко',status:'confirmed'},{time:'15:00 – 16:00',svc:'Стрижка женская',client:'Ирина Тихонова',status:'waiting'}],
-  2:[{time:'11:00 – 13:30',svc:'Окрашивание',client:'Дарья Смирнова',status:'waiting'},{time:'14:30 – 17:00',svc:'Окрашивание + тонирование',client:'Виктория Орлова',status:'confirmed'}],
-  3:[{time:'10:30 – 11:30',svc:'Маникюр + гель',client:'Марина Захарова',status:'confirmed'},{time:'12:00 – 13:00',svc:'Маникюр классический',client:'Светлана Федорова',status:'confirmed'},{time:'14:30 – 15:30',svc:'Маникюр + гель',client:'Екатерина Иванова',status:'waiting'}],
-  4:[{time:'11:00 – 12:30',svc:'Стрижка + укладка',client:'Наталья Попова',status:'confirmed'},{time:'14:00 – 15:00',svc:'Стрижка мужская',client:'Алексей Попов',status:'confirmed'},{time:'16:30 – 17:30',svc:'Стрижка женская',client:'Полина Козлова',status:'waiting'}],
-  5:[{time:'10:00 – 11:30',svc:'Чистка лица',client:'Татьяна Белова',status:'confirmed'},{time:'13:00 – 14:30',svc:'Чистка лица',client:'Ольга Кузнецова',status:'cancelled'},{time:'16:00 – 17:00',svc:'Консультация',client:'Анна Громова',status:'waiting'}],
-  6:[{time:'11:30 – 12:30',svc:'Педикюр',client:'Екатерина Иванова',status:'confirmed'},{time:'14:00 – 15:00',svc:'Маникюр классический',client:'Дарья Орлова',status:'confirmed'},{time:'16:30 – 18:00',svc:'Педикюр + маникюр',client:'Светлана Морозова',status:'waiting'}],
-  7:[{time:'10:00 – 14:00',svc:'Кератиновое выпрямление',client:'Светлана Федорова',status:'confirmed'},{time:'15:30 – 16:30',svc:'Укладка',client:'Анастасия Рыбакова',status:'waiting'}],
-  8:[{time:'12:00 – 12:45',svc:'Ламинирование ресниц',client:'Марина Захарова',status:'confirmed'},{time:'14:00 – 16:00',svc:'Окрашивание',client:'Виктория Смирнова',status:'confirmed'}],
-};
-function renderSchedule(){
-  document.getElementById('masters-grid').innerHTML=MASTERS.map(m=>{
-    const apts=(SCHEDULE[m.id]||[]).map(a=>`<div class="sch-card ${a.status}"><div class="sch-t">${a.time}</div><div class="sch-svc">${a.svc}</div><div class="sch-cl">${a.client}</div></div>`).join('');
-    return`<div class="m-col"><div class="m-col-head"><div class="m-av" style="background:${m.color}">${m.init}</div><div><div class="m-nm">${m.name}</div><div class="m-rl">${m.role}</div></div></div><div class="m-apts">${apts||'<div class="m-empty">Свободен</div>'}</div></div>`;
-  }).join('');
-}
-document.querySelectorAll('.sch-filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.sch-filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}));
+  <div class="np-item unread">
+    <div class="np-icon" style="background:#FEF3C7">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    </div>
+    <div class="np-content">
+      <div class="np-text">Новый отзыв ★★★★★</div>
+      <div class="np-sub">Марина Захарова: «Всё отлично, спасибо!»</div>
+    </div>
+    <div class="np-time">1 ч</div>
+  </div>
 
-/* ── CLIENTS DATA & RENDER ── */
-const CLIENTS=[
-  {name:'Анастасия Белова',    phone:'+7 (916) 234-56-78',last:'16.06.2024',visits:12,fav:'Стрижка женская',           color:'#7C3AED',vip:true },
-  {name:'Марина Захарова',     phone:'+7 (929) 890-12-34',last:'16.06.2024',visits:22,fav:'Маникюр + гель',            color:'#06B6D4',vip:true },
-  {name:'Екатерина Иванова',   phone:'+7 (903) 456-78-90',last:'16.06.2024',visits:18,fav:'Педикюр',                   color:'#10B981',vip:true },
-  {name:'Светлана Морозова',   phone:'+7 (913) 567-89-01',last:'10.06.2024',visits:16,fav:'Педикюр + маникюр',         color:'#8B5CF6',vip:true },
-  {name:'Ольга Кравченко',     phone:'+7 (906) 345-67-89',last:'13.06.2024',visits:14,fav:'Стрижка + укладка',         color:'#F59E0B',vip:false},
-  {name:'Татьяна Белова',      phone:'+7 (912) 901-23-45',last:'15.06.2024',visits:11,fav:'Чистка лица',               color:'#7C3AED',vip:false},
-  {name:'Виктория Орлова',     phone:'+7 (905) 876-54-32',last:'15.06.2024',visits:8, fav:'Окрашивание',               color:'#EC4899',vip:false},
-  {name:'Дарья Орлова',        phone:'+7 (921) 456-78-90',last:'16.06.2024',visits:8, fav:'Маникюр классический',      color:'#EF4444',vip:false},
-  {name:'Ольга Кузнецова',     phone:'+7 (926) 678-90-12',last:'11.06.2024',visits:9, fav:'Чистка лица',               color:'#EF4444',vip:false},
-  {name:'Наталья Попова',      phone:'+7 (909) 789-01-23',last:'16.06.2024',visits:7, fav:'Стрижка + укладка',         color:'#8B5CF6',vip:false},
-  {name:'Алексей Попов',       phone:'+7 (937) 789-01-23',last:'16.06.2024',visits:7, fav:'Стрижка мужская',           color:'#7C3AED',vip:false},
-  {name:'Полина Козлова',      phone:'+7 (911) 123-45-67',last:'14.06.2024',visits:6, fav:'Укладка',                   color:'#3B82F6',vip:false},
-  {name:'Дарья Смирнова',      phone:'+7 (925) 345-67-89',last:'16.06.2024',visits:5, fav:'Окрашивание',               color:'#3B82F6',vip:false},
-  {name:'Виктория Смирнова',   phone:'+7 (928) 678-90-12',last:'16.06.2024',visits:5, fav:'Окрашивание',               color:'#06B6D4',vip:false},
-  {name:'Ирина Тихонова',      phone:'+7 (964) 012-34-56',last:'09.06.2024',visits:4, fav:'Стрижка женская',           color:'#EC4899',vip:false},
-  {name:'Светлана Федорова',   phone:'+7 (917) 567-89-01',last:'16.06.2024',visits:3, fav:'Кератиновое выпрямление',   color:'#F59E0B',vip:false},
-  {name:'Анастасия Рыбакова',  phone:'+7 (908) 890-12-34',last:'16.06.2024',visits:3, fav:'Укладка',                   color:'#EC4899',vip:false},
-  {name:'Анна Громова',        phone:'+7 (919) 234-56-78',last:'16.06.2024',visits:2, fav:'Косметология',              color:'#10B981',vip:false},
-];
-function initials(n){return n.split(' ').slice(0,2).map(w=>w[0]).join('')}
-function renderClients(q=''){
-  const f=q.toLowerCase();
-  const rows=CLIENTS.filter(c=>!f||c.name.toLowerCase().includes(f)||c.phone.includes(f)||c.fav.toLowerCase().includes(f));
-  document.getElementById('cl-count').textContent=rows.length;
-  document.getElementById('cl-tbody').innerHTML=rows.map(c=>`
-    <tr>
-      <td><div style="display:flex;align-items:center;gap:10px"><div class="cl-av" style="background:${c.color}">${initials(c.name)}</div><span class="cl-nm">${c.name}</span></div></td>
-      <td><span class="cl-ph">${c.phone}</span></td>
-      <td style="color:var(--text-2)">${c.last}</td>
-      <td><span class="visit-chip">${c.visits}</span></td>
-      <td><span class="svc-tag">${c.fav}</span></td>
-      <td>${c.vip?'<span class="vip-tag">&#9733; VIP</span>':'<span style="color:var(--text-3);font-size:12px">—</span>'}</td>
-    </tr>`).join('');
-}
-document.getElementById('cl-input').addEventListener('input',e=>renderClients(e.target.value));
+  <div class="np-item">
+    <div class="np-icon" style="background:#DBEAFE">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+    </div>
+    <div class="np-content">
+      <div class="np-text">Новый клиент</div>
+      <div class="np-sub">Полина Козлова зарегистрировалась</div>
+    </div>
+    <div class="np-time">2 ч</div>
+  </div>
 
-document.addEventListener('DOMContentLoaded',()=>{renderMetrics();renderToday();renderSchedule();renderClients();initCharts()});
-</script>
+  <div class="np-item">
+    <div class="np-icon" style="background:#D1FAE5">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="np-content">
+      <div class="np-text">Оплата получена</div>
+      <div class="np-sub">8 000 ₽ · Кератиновое выпрямление</div>
+    </div>
+    <div class="np-time">3 ч</div>
+  </div>
+</div>
+
+
+<!-- ── TOAST CONTAINER ── -->
+<div id="toast-container"></div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
