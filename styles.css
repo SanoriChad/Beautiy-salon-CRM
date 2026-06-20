@@ -112,6 +112,7 @@ button, input { font-family: inherit; }
 
 /* ── CHARTS ── */
 .charts { display: grid; grid-template-columns: 3fr 2fr; gap: 14px; margin-bottom: 18px; }
+.chart-wrap { position: relative; height: 260px; }
 
 /* ── APT LIST ── */
 .apt-row { display: flex; align-items: center; gap: 14px; padding: 11px 10px; border-radius: var(--r-xs); border-bottom: 1px solid var(--border); transition: background var(--ease); margin: 0 -10px; }
