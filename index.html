@@ -212,6 +212,30 @@ button,input{font-family:inherit}
 .soon-title{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.3px}
 .soon-text{font-size:13.5px;color:var(--text-2);text-align:center;max-width:320px;line-height:1.6}
 
+/* ── CLIENTS ── */
+.cl-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+.cl-search{position:relative;display:flex;align-items:center}
+.cl-search svg{position:absolute;left:11px;color:var(--text-3);pointer-events:none}
+.cl-search input{width:290px;height:40px;background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-s);padding:0 12px 0 38px;font-size:13px;color:var(--text);outline:none;transition:all var(--ease)}
+.cl-search input::placeholder{color:var(--text-3)}
+.cl-search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+.cl-stat{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r-s);padding:6px 14px;font-size:12px;font-weight:600;color:var(--text-2)}
+.cl-stat span{color:var(--accent);font-weight:700}
+.tbl-wrap{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-s)}
+table{width:100%;border-collapse:collapse}
+thead{background:#FAFBFF;border-bottom:1.5px solid var(--border)}
+th{text-align:left;padding:11px 20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text-3)}
+td{padding:13px 20px;font-size:13px;border-bottom:1px solid var(--border)}
+tr:last-child td{border-bottom:none}
+tbody tr{transition:background var(--ease)}
+tbody tr:hover td{background:#FAFBFF}
+.cl-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:#fff;flex-shrink:0}
+.cl-nm{font-weight:600}
+.cl-ph{color:var(--text-2);font-size:12.5px}
+.visit-chip{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;background:var(--accent-light);color:var(--accent);border-radius:50%;font-size:11.5px;font-weight:700}
+.svc-tag{display:inline-flex;align-items:center;background:var(--bg);color:var(--text-2);font-size:11.5px;padding:3px 9px;border-radius:20px;border:1px solid var(--border)}
+.vip-tag{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:20px;background:linear-gradient(135deg,#FDE68A,#FCD34D);color:#92400E}
+
 /* ── RESPONSIVE ── */
 @media(max-width:1280px){.charts{grid-template-columns:1fr}.masters-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:1024px){.metrics{grid-template-columns:repeat(2,1fr)}}
@@ -280,7 +304,20 @@ button,input{font-family:inherit}
         </div>
         <div class="masters-grid" id="masters-grid"></div>
       </section>
-      <section id="section-clients" class="section"><div class="pg-head"><h1 class="pg-title">Клиенты</h1></div></section>
+      <section id="section-clients" class="section">
+        <div class="pg-head"><h1 class="pg-title">Клиенты</h1><p class="pg-sub">База клиентов салона</p></div>
+        <div class="cl-top">
+          <div class="cl-search">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input id="cl-input" type="text" placeholder="Поиск по имени, телефону, услуге...">
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="cl-stat">Клиентов: <span id="cl-count">18</span></div>
+            <button class="btn-primary"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Добавить</button>
+          </div>
+        </div>
+        <div class="tbl-wrap"><table><thead><tr><th>Клиент</th><th>Телефон</th><th>Последний визит</th><th>Визитов</th><th>Любимая услуга</th><th>Статус</th></tr></thead><tbody id="cl-tbody"></tbody></table></div>
+      </section>
       <section id="section-masters" class="section">
         <div class="pg-head"><h1 class="pg-title">Мастера</h1><p class="pg-sub">Управление командой</p></div>
         <div class="soon-wrap"><div class="soon-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div class="soon-title">Раздел в разработке</div><p class="soon-text">Здесь будет управление профилями мастеров, расписанием и статистикой по каждому специалисту.</p></div>
@@ -390,7 +427,45 @@ function renderSchedule(){
 }
 document.querySelectorAll('.sch-filter').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.sch-filter').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}));
 
-document.addEventListener('DOMContentLoaded',()=>{renderMetrics();renderToday();renderSchedule();initCharts()});
+/* ── CLIENTS DATA & RENDER ── */
+const CLIENTS=[
+  {name:'Анастасия Белова',    phone:'+7 (916) 234-56-78',last:'16.06.2024',visits:12,fav:'Стрижка женская',           color:'#7C3AED',vip:true },
+  {name:'Марина Захарова',     phone:'+7 (929) 890-12-34',last:'16.06.2024',visits:22,fav:'Маникюр + гель',            color:'#06B6D4',vip:true },
+  {name:'Екатерина Иванова',   phone:'+7 (903) 456-78-90',last:'16.06.2024',visits:18,fav:'Педикюр',                   color:'#10B981',vip:true },
+  {name:'Светлана Морозова',   phone:'+7 (913) 567-89-01',last:'10.06.2024',visits:16,fav:'Педикюр + маникюр',         color:'#8B5CF6',vip:true },
+  {name:'Ольга Кравченко',     phone:'+7 (906) 345-67-89',last:'13.06.2024',visits:14,fav:'Стрижка + укладка',         color:'#F59E0B',vip:false},
+  {name:'Татьяна Белова',      phone:'+7 (912) 901-23-45',last:'15.06.2024',visits:11,fav:'Чистка лица',               color:'#7C3AED',vip:false},
+  {name:'Виктория Орлова',     phone:'+7 (905) 876-54-32',last:'15.06.2024',visits:8, fav:'Окрашивание',               color:'#EC4899',vip:false},
+  {name:'Дарья Орлова',        phone:'+7 (921) 456-78-90',last:'16.06.2024',visits:8, fav:'Маникюр классический',      color:'#EF4444',vip:false},
+  {name:'Ольга Кузнецова',     phone:'+7 (926) 678-90-12',last:'11.06.2024',visits:9, fav:'Чистка лица',               color:'#EF4444',vip:false},
+  {name:'Наталья Попова',      phone:'+7 (909) 789-01-23',last:'16.06.2024',visits:7, fav:'Стрижка + укладка',         color:'#8B5CF6',vip:false},
+  {name:'Алексей Попов',       phone:'+7 (937) 789-01-23',last:'16.06.2024',visits:7, fav:'Стрижка мужская',           color:'#7C3AED',vip:false},
+  {name:'Полина Козлова',      phone:'+7 (911) 123-45-67',last:'14.06.2024',visits:6, fav:'Укладка',                   color:'#3B82F6',vip:false},
+  {name:'Дарья Смирнова',      phone:'+7 (925) 345-67-89',last:'16.06.2024',visits:5, fav:'Окрашивание',               color:'#3B82F6',vip:false},
+  {name:'Виктория Смирнова',   phone:'+7 (928) 678-90-12',last:'16.06.2024',visits:5, fav:'Окрашивание',               color:'#06B6D4',vip:false},
+  {name:'Ирина Тихонова',      phone:'+7 (964) 012-34-56',last:'09.06.2024',visits:4, fav:'Стрижка женская',           color:'#EC4899',vip:false},
+  {name:'Светлана Федорова',   phone:'+7 (917) 567-89-01',last:'16.06.2024',visits:3, fav:'Кератиновое выпрямление',   color:'#F59E0B',vip:false},
+  {name:'Анастасия Рыбакова',  phone:'+7 (908) 890-12-34',last:'16.06.2024',visits:3, fav:'Укладка',                   color:'#EC4899',vip:false},
+  {name:'Анна Громова',        phone:'+7 (919) 234-56-78',last:'16.06.2024',visits:2, fav:'Косметология',              color:'#10B981',vip:false},
+];
+function initials(n){return n.split(' ').slice(0,2).map(w=>w[0]).join('')}
+function renderClients(q=''){
+  const f=q.toLowerCase();
+  const rows=CLIENTS.filter(c=>!f||c.name.toLowerCase().includes(f)||c.phone.includes(f)||c.fav.toLowerCase().includes(f));
+  document.getElementById('cl-count').textContent=rows.length;
+  document.getElementById('cl-tbody').innerHTML=rows.map(c=>`
+    <tr>
+      <td><div style="display:flex;align-items:center;gap:10px"><div class="cl-av" style="background:${c.color}">${initials(c.name)}</div><span class="cl-nm">${c.name}</span></div></td>
+      <td><span class="cl-ph">${c.phone}</span></td>
+      <td style="color:var(--text-2)">${c.last}</td>
+      <td><span class="visit-chip">${c.visits}</span></td>
+      <td><span class="svc-tag">${c.fav}</span></td>
+      <td>${c.vip?'<span class="vip-tag">&#9733; VIP</span>':'<span style="color:var(--text-3);font-size:12px">—</span>'}</td>
+    </tr>`).join('');
+}
+document.getElementById('cl-input').addEventListener('input',e=>renderClients(e.target.value));
+
+document.addEventListener('DOMContentLoaded',()=>{renderMetrics();renderToday();renderSchedule();renderClients();initCharts()});
 </script>
 </body>
 </html>
