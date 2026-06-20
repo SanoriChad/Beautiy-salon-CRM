@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Velvet Beauty — CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --accent:        #7C3AED;
+  --accent-mid:    #8B5CF6;
+  --accent-light:  #EDE9FE;
+  --pink:          #EC4899;
+  --pink-light:    #FCE7F3;
+  --bg:            #F4F2FF;
+  --sidebar:       #1E1B4B;
+  --card:          #FFFFFF;
+  --border:        #E9E7F0;
+  --text:          #111827;
+  --text-2:        #6B7280;
+  --text-3:        #9CA3AF;
+  --green:         #10B981;
+  --green-bg:      #D1FAE5;
+  --green-text:    #065F46;
+  --yellow:        #F59E0B;
+  --yellow-bg:     #FEF3C7;
+  --yellow-text:   #92400E;
+  --red:           #EF4444;
+  --red-bg:        #FEE2E2;
+  --red-text:      #991B1B;
+  --blue-bg:       #DBEAFE;
+  --blue-text:     #1E40AF;
+  --shadow-s:      0 1px 2px rgba(0,0,0,.05);
+  --shadow-m:      0 4px 12px rgba(0,0,0,.07);
+  --shadow-l:      0 12px 32px rgba(0,0,0,.09);
+  --r:             16px;
+  --r-s:           10px;
+  --r-xs:          6px;
+  --sw:            240px;
+  --th:            64px;
+  --ease:          .18s cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px}
+body{font-family:'Inter',-apple-system,sans-serif;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.5}
+button,input{font-family:inherit}
+
+/* ── APP SHELL ── */
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sw);flex-shrink:0;
+  background:var(--sidebar);
+  display:flex;flex-direction:column;overflow:hidden;
+  position:relative;z-index:10;
+}
+.sidebar::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 200px 180px at 120px 0px,rgba(139,92,246,.25),transparent);
+}
+.sb-head{padding:22px 18px 18px;border-bottom:1px solid rgba(255,255,255,.07)}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{
+  width:36px;height:36px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent),var(--pink));
+  display:flex;align-items:center;justify-content:center;
+}
+.logo-text{font-size:14.5px;font-weight:700;color:#fff;letter-spacing:-.3px;line-height:1.2}
+.logo-sub{font-size:10.5px;color:rgba(255,255,255,.38);letter-spacing:.1px}
+.sb-nav{flex:1;padding:10px 10px;overflow-y:auto;display:flex;flex-direction:column;gap:1px}
+.sb-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:rgba(255,255,255,.28);padding:14px 8px 5px}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:9px;
+  color:rgba(255,255,255,.55);font-size:13px;font-weight:500;
+  cursor:pointer;transition:all var(--ease);user-select:none;
+}
+.nav-item:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
+.nav-item.active{background:rgba(255,255,255,.11);color:#fff}
+.nav-item.active .ni{opacity:1;color:var(--accent-mid)}
+.ni{width:17px;height:17px;flex-shrink:0;opacity:.65;transition:opacity var(--ease)}
+.nav-badge{
+  margin-left:auto;background:var(--pink);color:#fff;
+  font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px;min-width:18px;text-align:center;
+}
+.sb-foot{padding:14px 16px;border-top:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px}
+.sb-avatar{
+  width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent),var(--pink));
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:#fff;
+}
+.sb-name{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.82);line-height:1.2}
+.sb-role{font-size:11px;color:rgba(255,255,255,.38)}
+
+/* ── MAIN & TOPBAR ── */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{
+  height:var(--th);background:#fff;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 28px;gap:14px;flex-shrink:0;
+}
+.tb-brand{display:flex;align-items:center;gap:8px;margin-right:auto}
+.tb-salon{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.3px}
+.tb-dot{width:5px;height:5px;border-radius:50%;background:var(--green);margin-top:1px}
+.tb-status{font-size:11.5px;color:var(--green);font-weight:600}
+.search-wrap{position:relative;display:flex;align-items:center}
+.search-wrap svg{position:absolute;left:11px;color:var(--text-3);pointer-events:none;flex-shrink:0}
+.search-wrap input{
+  width:230px;height:38px;background:var(--bg);border:1.5px solid var(--border);
+  border-radius:var(--r-s);padding:0 12px 0 36px;font-size:13px;color:var(--text);outline:none;transition:all var(--ease);
+}
+.search-wrap input::placeholder{color:var(--text-3)}
+.search-wrap input:focus{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(124,58,237,.1)}
+.tb-actions{display:flex;align-items:center;gap:8px}
+.icon-btn{
+  width:38px;height:38px;border:1.5px solid var(--border);border-radius:var(--r-s);
+  background:#fff;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--text-2);transition:all var(--ease);position:relative;
+}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
+.notif-dot{position:absolute;top:7px;right:7px;width:7px;height:7px;background:var(--pink);border-radius:50%;border:1.5px solid #fff}
+.admin-av{
+  width:38px;height:38px;border-radius:50%;cursor:pointer;
+  background:linear-gradient(135deg,var(--accent),var(--pink));
+  display:flex;align-items:center;justify-content:center;
+  font-size:12.5px;font-weight:700;color:#fff;
+  box-shadow:0 2px 8px rgba(124,58,237,.35);
+}
+
+/* ── CONTENT & SECTIONS ── */
+.content{flex:1;overflow-y:auto;padding:28px 30px}
+.section{display:none;animation:fadeUp .22s ease both}
+.section.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+.pg-head{margin-bottom:24px}
+.pg-title{font-size:21px;font-weight:800;letter-spacing:-.5px;color:var(--text)}
+.pg-sub{font-size:13px;color:var(--text-2);margin-top:2px}
+
+/* ── CARD ── */
+.card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:22px 24px;box-shadow:var(--shadow-s);transition:box-shadow var(--ease)}
+.card:hover{box-shadow:var(--shadow-m)}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.card-title{font-size:14.5px;font-weight:600;color:var(--text);letter-spacing:-.2px}
+.card-action{font-size:12.5px;color:var(--accent);font-weight:500;cursor:pointer;transition:opacity var(--ease)}
+.card-action:hover{opacity:.7}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1280px){.charts{grid-template-columns:1fr}.masters-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:1024px){.metrics{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){.sidebar{display:none}.content{padding:16px}.topbar{padding:0 16px}.metrics{grid-template-columns:1fr 1fr;gap:10px}.search-wrap input{width:160px}.masters-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-head">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+        </div>
+        <div><div class="logo-text">Velvet Beauty</div><div class="logo-sub">CRM система</div></div>
+      </div>
+    </div>
+    <nav class="sb-nav" id="sb-nav">
+      <div class="sb-label">Основное</div>
+      <div class="nav-item active" data-sec="dashboard"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg><span class="nav-label">Дашборд</span><span class="nav-badge">3</span></div>
+      <div class="nav-item" data-sec="appointments"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span class="nav-label">Записи</span></div>
+      <div class="nav-item" data-sec="clients"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="nav-label">Клиенты</span></div>
+      <div class="sb-label">Управление</div>
+      <div class="nav-item" data-sec="masters"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="nav-label">Мастера</span></div>
+      <div class="nav-item" data-sec="analytics"><svg class="ni" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg><span class="nav-label">Аналитика</span></div>
+    </nav>
+    <div class="sb-foot"><div class="sb-avatar">АК</div><div><div class="sb-name">Алина Козлова</div><div class="sb-role">Администратор</div></div></div>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="tb-brand"><span class="tb-salon">Velvet Beauty</span><div class="tb-dot"></div><span class="tb-status">Онлайн</span></div>
+      <div class="search-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Поиск клиентов, записей..."></div>
+      <div class="tb-actions">
+        <button class="icon-btn"><div class="notif-dot"></div><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
+        <div class="admin-av">АК</div>
+      </div>
+    </header>
+    <div class="content">
+      <section id="section-dashboard" class="section active"><div class="pg-head"><h1 class="pg-title">Дашборд</h1><p class="pg-sub">Загрузка данных...</p></div></section>
+      <section id="section-appointments" class="section"><div class="pg-head"><h1 class="pg-title">Записи</h1></div></section>
+      <section id="section-clients" class="section"><div class="pg-head"><h1 class="pg-title">Клиенты</h1></div></section>
+      <section id="section-masters" class="section"><div class="pg-head"><h1 class="pg-title">Мастера</h1></div></section>
+      <section id="section-analytics" class="section"><div class="pg-head"><h1 class="pg-title">Аналитика</h1></div></section>
+    </div>
+  </div>
+</div>
+<script>
+document.getElementById('sb-nav').addEventListener('click', e => {
+  const item = e.target.closest('.nav-item');
+  if (!item) return;
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i === item));
+  document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === `section-${item.dataset.sec}`));
+});
+</script>
+</body>
+</html>
