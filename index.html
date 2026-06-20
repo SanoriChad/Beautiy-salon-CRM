@@ -148,6 +148,37 @@ button,input{font-family:inherit}
 .card-action{font-size:12.5px;color:var(--accent);font-weight:500;cursor:pointer;transition:opacity var(--ease)}
 .card-action:hover{opacity:.7}
 
+/* ── METRICS ── */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.m-card{background:var(--card);border:1.5px solid var(--border);border-radius:var(--r);padding:20px 20px 18px;box-shadow:var(--shadow-s);cursor:default;transition:all var(--ease)}
+.m-card:hover{box-shadow:var(--shadow-m);transform:translateY(-2px)}
+.m-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.m-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.m-trend{display:inline-flex;align-items:center;gap:3px;font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:20px}
+.trend-up{background:var(--green-bg);color:var(--green-text)}
+.m-val{font-size:27px;font-weight:800;letter-spacing:-.8px;color:var(--text);line-height:1;margin-bottom:5px}
+.m-label{font-size:13px;color:var(--text-2)}
+.m-hint{font-size:11px;color:var(--text-3);margin-top:2px}
+
+/* ── CHARTS ── */
+.charts{display:grid;grid-template-columns:3fr 2fr;gap:14px;margin-bottom:18px}
+
+/* ── APT LIST ── */
+.apt-row{display:flex;align-items:center;gap:14px;padding:11px 10px;border-radius:var(--r-xs);border-bottom:1px solid var(--border);transition:background var(--ease);margin:0 -10px}
+.apt-row:last-child{border-bottom:none}
+.apt-row:hover{background:#FAFBFF}
+.apt-time{font-size:12.5px;font-weight:600;color:var(--text-2);min-width:42px;flex-shrink:0}
+.apt-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.apt-info{flex:1;min-width:0}
+.apt-client{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.apt-svc{font-size:12px;color:var(--text-2);margin-top:1px}
+.apt-master-name{font-size:12px;color:var(--text-2);text-align:right;min-width:130px;flex-shrink:0}
+.apt-price{font-size:13px;font-weight:600;min-width:80px;text-align:right;flex-shrink:0}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.b-ok{background:var(--green-bg);color:var(--green-text)}
+.b-wait{background:var(--yellow-bg);color:var(--yellow-text)}
+.b-cancel{background:var(--red-bg);color:var(--red-text)}
+
 /* ── RESPONSIVE ── */
 @media(max-width:1280px){.charts{grid-template-columns:1fr}.masters-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:1024px){.metrics{grid-template-columns:repeat(2,1fr)}}
@@ -186,7 +217,18 @@ button,input{font-family:inherit}
       </div>
     </header>
     <div class="content">
-      <section id="section-dashboard" class="section active"><div class="pg-head"><h1 class="pg-title">Дашборд</h1><p class="pg-sub">Загрузка данных...</p></div></section>
+      <section id="section-dashboard" class="section active">
+        <div class="pg-head"><h1 class="pg-title">Дашборд</h1><p class="pg-sub">Воскресенье, 16 июня 2024 · Сегодня 24 записи</p></div>
+        <div class="metrics" id="metrics-grid"></div>
+        <div class="charts">
+          <div class="card"><div class="card-head"><span class="card-title">Выручка за последние 2 недели</span><span class="card-action">Подробнее</span></div><canvas id="revenueChart" height="105"></canvas></div>
+          <div class="card"><div class="card-head"><span class="card-title">Популярность услуг</span><span class="card-action">Все услуги</span></div><canvas id="servicesChart" height="215"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><span class="card-title">Ближайшие записи на сегодня</span><span class="card-action" data-sec="appointments" id="apts-link">Расписание →</span></div>
+          <div id="today-list"></div>
+        </div>
+      </section>
       <section id="section-appointments" class="section"><div class="pg-head"><h1 class="pg-title">Записи</h1></div></section>
       <section id="section-clients" class="section"><div class="pg-head"><h1 class="pg-title">Клиенты</h1></div></section>
       <section id="section-masters" class="section"><div class="pg-head"><h1 class="pg-title">Мастера</h1></div></section>
@@ -195,12 +237,75 @@ button,input{font-family:inherit}
   </div>
 </div>
 <script>
-document.getElementById('sb-nav').addEventListener('click', e => {
-  const item = e.target.closest('.nav-item');
-  if (!item) return;
-  document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i === item));
-  document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === `section-${item.dataset.sec}`));
-});
+/* ── DATA ── */
+const TODAY_APTS = [
+  { time:'10:00', client:'Анастасия Белова',   svc:'Стрижка женская',            master:'Анна Соколова',     status:'confirmed', price:2500  },
+  { time:'10:30', client:'Марина Захарова',    svc:'Маникюр + гель',             master:'Елена Петрова',     status:'confirmed', price:2800  },
+  { time:'11:00', client:'Дарья Смирнова',     svc:'Окрашивание',                master:'Мария Козлова',     status:'waiting',   price:5500  },
+  { time:'11:30', client:'Екатерина Иванова',  svc:'Педикюр',                    master:'Татьяна Волкова',   status:'confirmed', price:2500  },
+  { time:'12:00', client:'Светлана Федорова',  svc:'Кератиновое выпрямление',    master:'Ирина Лебедева',    status:'confirmed', price:8000  },
+  { time:'13:00', client:'Ольга Кузнецова',    svc:'Чистка лица',                master:'Юлия Морозова',     status:'cancelled', price:3500  },
+  { time:'14:00', client:'Наталья Попова',     svc:'Стрижка + укладка',          master:'Ольга Новикова',    status:'waiting',   price:4000  },
+  { time:'15:30', client:'Марина Захарова',    svc:'Ламинирование ресниц',       master:'Наталья Соловьева', status:'confirmed', price:2200  },
+  { time:'16:00', client:'Анна Громова',       svc:'Косметическая консультация', master:'Юлия Морозова',     status:'waiting',   price:1000  },
+];
+const REVENUE_LABELS = ['3 июн','4 июн','5 июн','6 июн','7 июн','8 июн','9 июн','10 июн','11 июн','12 июн','13 июн','14 июн','15 июн','16 июн'];
+const REVENUE_DATA   = [52000,48500,63000,74500,68000,41000,36500,66000,79000,83500,72000,91500,86000,94200];
+const SVC_LABELS = ['Стрижка','Маникюр + гель','Окрашивание','Педикюр','Укладка','Косметология','Ламинирование'];
+const SVC_DATA   = [148,134,99,88,77,62,54];
+const METRICS_DATA = [
+  { icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',ibg:'#EDE9FE',ic:'#7C3AED',val:'24',label:'Записей сегодня',trend:'+8%',hint:'vs вчера'},
+  { icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',ibg:'#D1FAE5',ic:'#059669',val:'847 200 ₽',label:'Выручка за месяц',trend:'+12%',hint:'vs прошлый месяц'},
+  { icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>',ibg:'#DBEAFE',ic:'#2563EB',val:'18',label:'Новых клиентов',trend:'+15%',hint:'vs прошлый месяц'},
+  { icon:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',ibg:'#FEF3C7',ic:'#D97706',val:'78%',label:'Загрузка мастеров',trend:'+5%',hint:'vs вчера'},
+];
+const statusLabel = {confirmed:'Подтверждена',waiting:'Ожидает',cancelled:'Отменена'};
+const statusClass = {confirmed:'b-ok',waiting:'b-wait',cancelled:'b-cancel'};
+const statusDot   = {confirmed:'#10B981',waiting:'#F59E0B',cancelled:'#EF4444'};
+function fmt(n){return n.toLocaleString('ru-RU')+' ₽'}
+
+/* ── RENDER METRICS ── */
+function renderMetrics(){
+  document.getElementById('metrics-grid').innerHTML = METRICS_DATA.map(m=>`
+    <div class="m-card">
+      <div class="m-top"><div class="m-icon" style="background:${m.ibg};color:${m.ic}">${m.icon}</div>
+      <span class="m-trend trend-up"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>${m.trend}</span></div>
+      <div class="m-val">${m.val}</div><div class="m-label">${m.label}</div><div class="m-hint">${m.hint}</div>
+    </div>`).join('');
+}
+
+/* ── RENDER TODAY ── */
+function renderToday(){
+  document.getElementById('today-list').innerHTML = TODAY_APTS.map(a=>`
+    <div class="apt-row">
+      <span class="apt-time">${a.time}</span>
+      <div class="apt-dot" style="background:${statusDot[a.status]}"></div>
+      <div class="apt-info"><div class="apt-client">${a.client}</div><div class="apt-svc">${a.svc}</div></div>
+      <span class="apt-master-name">${a.master}</span>
+      <span class="badge ${statusClass[a.status]}">${statusLabel[a.status]}</span>
+      <span class="apt-price">${fmt(a.price)}</span>
+    </div>`).join('');
+}
+
+/* ── CHARTS ── */
+function initCharts(){
+  Chart.defaults.font.family="'Inter',sans-serif";Chart.defaults.color='#9CA3AF';
+  const rCtx=document.getElementById('revenueChart').getContext('2d');
+  const grad=rCtx.createLinearGradient(0,0,0,280);
+  grad.addColorStop(0,'rgba(124,58,237,.18)');grad.addColorStop(1,'rgba(124,58,237,0)');
+  new Chart(rCtx,{type:'line',data:{labels:REVENUE_LABELS,datasets:[{data:REVENUE_DATA,borderColor:'#7C3AED',backgroundColor:grad,fill:true,tension:.42,borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#7C3AED',pointBorderColor:'#fff',pointBorderWidth:2,pointHoverRadius:6}]},options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1E1B4B',titleFont:{size:12,weight:'600'},bodyFont:{size:13,weight:'700'},padding:12,cornerRadius:10,callbacks:{label:c=>' '+c.raw.toLocaleString('ru-RU')+' ₽'}}},scales:{x:{grid:{display:false},border:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'rgba(0,0,0,.04)'},border:{display:false},ticks:{font:{size:11},callback:v=>(v/1000).toFixed(0)+'к ₽',maxTicksLimit:5}}}}});
+  new Chart(document.getElementById('servicesChart').getContext('2d'),{type:'bar',data:{labels:SVC_LABELS,datasets:[{data:SVC_DATA,backgroundColor:['#7C3AED','#8B5CF6','#9F67FA','#A78BFA','#B8A4F8','#C4B5FD','#DDD6FE'],borderRadius:7,borderSkipped:false,barThickness:18}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1E1B4B',padding:10,cornerRadius:10,callbacks:{label:c=>'  '+c.raw+' записей'}}},scales:{x:{grid:{color:'rgba(0,0,0,.04)'},border:{display:false},ticks:{font:{size:11}}},y:{grid:{display:false},border:{display:false},ticks:{font:{size:12,weight:'500'}}}}}});
+}
+
+/* ── NAV ── */
+function navigate(sec){
+  document.querySelectorAll('.nav-item').forEach(i=>i.classList.toggle('active',i.dataset.sec===sec));
+  document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===`section-${sec}`));
+}
+document.getElementById('sb-nav').addEventListener('click',e=>{const item=e.target.closest('.nav-item');if(item)navigate(item.dataset.sec)});
+document.getElementById('apts-link').addEventListener('click',()=>navigate('appointments'));
+
+document.addEventListener('DOMContentLoaded',()=>{renderMetrics();renderToday();initCharts()});
 </script>
 </body>
 </html>
